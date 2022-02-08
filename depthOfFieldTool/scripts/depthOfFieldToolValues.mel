@@ -1,0 +1,74 @@
+/*  depthOfFieldToolValues.mel
+		Procedures for setting / getting the options on the depthOfFieldTool.
+*/
+
+
+
+global proc depthOfFieldToolValues(string $toolName) {
+
+	string $icon = "dofContext.png";
+	string $helpTag = "Depth Of Field Tool";
+	toolPropertySetCommon $toolName $icon $helpTag;
+	toolPropertySelect "depthOfFieldContext";
+
+	string $parent = `toolPropertyWindow -q -location`;
+	setParent $parent;
+
+	// F Stop Attribute
+	float $fStop = `depthOfFieldContext -q -fStop $toolName`;
+	floatSliderGrp -e -v $fStop DepthOfFieldFStopField;
+	floatSliderGrp -e -changeCommand ("updateFStop " + $toolName) DepthOfFieldFStopField;
+
+	// Circle of Confusion Attribute
+	float $circleOfConfusion = `depthOfFieldContext -q -circleOfConfusion $toolName`;
+	floatSliderGrp -e -v $circleOfConfusion DepthOfFieldCoCField;
+	floatSliderGrp -e -changeCommand ("updateCircleOfConfusion " + $toolName) DepthOfFieldCoCField;
+
+	// Draw Feedback Attribute
+	int $drawFeedback = `depthOfFieldContext -q -drawFeedback $toolName`;
+	checkBoxGrp -e -v1 $drawFeedback DepthOfFieldDrawFeedbackCheckBox;
+	checkBoxGrp -e -changeCommand ("updateDrawFeedback " + $toolName) DepthOfFieldDrawFeedbackCheckBox;
+
+	// Decimal Precision Attribute
+	int $decimalPrecision = `depthOfFieldContext -q -decimalPrecision $toolName`;
+	intSliderGrp -e -v $decimalPrecision DepthOfFieldDecimalPrecisionField;
+	intSliderGrp -e -changeCommand ("updateDecimalPrecision " + $toolName) DepthOfFieldDecimalPrecisionField;
+
+	updateDrawFeedbackFalseDecimalPrecisionEnable($toolName);
+};
+
+
+
+global proc updateFStop(string $toolName) {
+
+	float $fStop = `floatSliderGrp -q -v DepthOfFieldFStopField`;
+	depthOfFieldContext -e -fStop $fStop $toolName;
+};
+
+global proc updateCircleOfConfusion(string $toolName) {
+
+	float $circleOfConfusion = `floatSliderGrp -q -v DepthOfFieldCoCField`;
+	depthOfFieldContext -e -circleOfConfusion $circleOfConfusion $toolName;
+};
+
+global proc updateDrawFeedback(string $toolName) {
+
+	int $drawFeedback = `checkBoxGrp -q -v1 DepthOfFieldDrawFeedbackCheckBox`;
+	depthOfFieldContext -e -drawFeedback $drawFeedback $toolName;
+
+	updateDrawFeedbackFalseDecimalPrecisionEnable($toolName);
+};
+
+global proc updateDecimalPrecision(string $toolName) {
+
+	int $decimalPrecision = `intSliderGrp -q -v DepthOfFieldDecimalPrecisionField`;
+	depthOfFieldContext -e -decimalPrecision $decimalPrecision $toolName;
+};
+
+
+
+global proc updateDrawFeedbackFalseDecimalPrecisionEnable(string $toolName) {
+	
+	int $enabled = `depthOfFieldContext -q -drawFeedback $toolName`;
+	intSliderGrp -edit -enable $enabled DepthOfFieldDecimalPrecisionField;
+}

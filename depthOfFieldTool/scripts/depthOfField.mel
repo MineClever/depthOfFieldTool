@@ -1,0 +1,4 @@
+global proc depthOfField() {
+	string $context = `depthOfFieldContext`;
+	setToolTo $context;
+}

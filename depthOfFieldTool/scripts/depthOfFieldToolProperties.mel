@@ -1,0 +1,34 @@
+/*  depthOfFieldToolProperties.mel
+		Creates the Ui for the tool options box for the depthOfFieldContext plugin.
+*/
+
+global proc depthOfFieldToolProperties() {
+
+	string $parent = `toolPropertyWindow -q -location`;
+	setParent $parent;
+
+	setUITemplate -pushTemplate OptionsTemplate;
+
+	columnLayout depthOfFieldContext;
+		frameLayout -collapsable true - collapse false -label "Depth Of Field Settings";
+			columnLayout;
+				separator -style "none";
+				floatSliderGrp -label "F Stop" -field true -minValue 1.0 -maxValue 64.0 -fieldMinValue 1.0 -fieldMaxValue 64.0 -value 5.6 DepthOfFieldFStopField;
+				floatSliderGrp -label "Circle Of Confusion" -field true -minValue 0.001	-maxValue 0.3 -fieldMinValue 0.001 -fieldMaxValue 0.3 -value 0.03 DepthOfFieldCoCField;
+
+			setParent ..;
+		setParent ..;
+
+		frameLayout -collapsable true - collapse false -label "Display Options";
+			columnLayout;
+				separator -style "none";
+				checkBoxGrp -label "Draw Feedback" DepthOfFieldDrawFeedbackCheckBox;
+				intSliderGrp -label "Decimal Precision" -field true -minValue 0 -maxValue 6 -fieldMinValue 0 -fieldMaxValue 6 -value 2 DepthOfFieldDecimalPrecisionField;
+
+			setParent ..;
+		setParent ..;
+
+	setParent ..;
+
+	setUITemplate -popTemplate;
+};
